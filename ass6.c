@@ -1,3 +1,8 @@
+//Jonathan Pham
+//CS 4760 OS
+//Memory Management
+//Due: 05/08/19
+
 #include "memoryManagement.h"
 
 struct memory_resource {
