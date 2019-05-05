@@ -45,7 +45,7 @@ void timeToFork(unsigned int *seconds, unsigned int *nanoseconds, unsigned int *
         } else {
                 *forkTimeNanoseconds = random + *nanoseconds;
         }
-        *forkTimeSeconds = *seconds;// + rand()%2;
+        *forkTimeSeconds = *seconds;
 }
 
 int main(int argc, char *argv[]){
@@ -153,7 +153,7 @@ int main(int argc, char *argv[]){
                                 for(i = 0 ; i < 32; i++){
                                         (*rscArrayPointer)[placementMarker]->tableSz[i] = -1;
                                 }
-                                (*rscArrayPointer)[placementMarker]->resource_Marker = 1; // pointer to an array os pointers to structsd
+                                (*rscArrayPointer)[placementMarker]->resource_Marker = 1; 
 
                         }
                 }
@@ -193,10 +193,10 @@ int main(int argc, char *argv[]){
                                                         }
                                                         if(pagefault == 1){ 
                                                                 pageFaults++;
-                                                                fprintf(infile, "Master: Address %d is not in a frame, pagefault\n", address);
+                                                                fprintf(infile, "Master: Address %d is not in a frame, page fault\n", address);
                                                                 while(frameTable[frameTablePos][1] != 0){ //Check for second frame if it exists
                                                                         frameTable[frameTablePos][1] = 0; //Set to 0 if it was 1
-                                                                        frameTablePos++; //then move position
+                                                                        frameTablePos++; //Move to next frame
                                                                         if(frameTablePos == 256){
                                                                                 frameTablePos = 0;
                                                                         }
@@ -204,12 +204,12 @@ int main(int argc, char *argv[]){
                                                                 if(frameTable[frameTablePos][1] == 0){
                                                                         memoryAccesses++;
                                                                         fprintf(infile, "Master: Clearing frame %d and swapping in P%d page %d\n", frameTablePos, i, (int)childRequestAddress);
-                                                                        //new page goes here
+                                                                        //New page frame goes in this section
                                                                         (*rscArrayPointer)[i]->tableSz[(int)childRequestAddress] = frameTablePos;
-                                                                        frameTable[frameTablePos][0] = (*rscArrayPointer)[i]->pid;//(int)childRequestAddress;
+                                                                        frameTable[frameTablePos][0] = (*rscArrayPointer)[i]->pid;
                                                                         frameTable[frameTablePos][2] = atoi(requestType);
                                                                         fprintf(infile, "Master: Address %d in frame %d giving data to P%d at time %d : %d\n", address, frameTablePos, i, *seconds, *nanoseconds);
-                                                                        frameTablePos++; //clock advances
+                                                                        frameTablePos++; //Our clock increments in sec/nanosec
                                                                         if(frameTablePos == 256){
                                                                                 frameTablePos = 0;
                                                                         }
@@ -218,11 +218,11 @@ int main(int argc, char *argv[]){
                                                                 accessSpeed +=  15000000;
                                                                 *nanoseconds += 15000000;
                                                                 fprintf(infile, "Master: Dirty bit is set to %d and clock is incremented 15ms\n", atoi(requestType));
-                                                        } else { //if it finds a place with an empty frame
+                                                        } else { //If an empty frame is located, proceed to this else segment
                                                                 memoryAccesses++;
                                                                 (*rscArrayPointer)[i]->tableSz[(int)childRequestAddress] = frameTablePos; 
-                                                                frameTable[frameTablePos][0] = (*rscArrayPointer)[i]->pid;//(int)childRequestAddress;
-                                                                frameTable[frameTablePos][1] = 0;//R is cleared
+                                                                frameTable[frameTablePos][0] = (*rscArrayPointer)[i]->pid;
+                                                                frameTable[frameTablePos][1] = 0; //Resources is now clear
                                                                 frameTable[frameTablePos][2] = atoi(requestType);
                                                                 fprintf(infile, "Master: Address %d in frame %d giving data to P%d at time %d : %d\n", address, frameTablePos, i, *seconds, *nanoseconds);
                                                                 frameTablePos++; //clock advances.
@@ -237,7 +237,7 @@ int main(int argc, char *argv[]){
 
                                                 } else {
                                                         memoryAccesses++;
-                                                        frameTable[(*rscArrayPointer)[i]->tableSz[(int)childRequestAddress]][1] = 1; //reference bit set
+                                                        frameTable[(*rscArrayPointer)[i]->tableSz[(int)childRequestAddress]][1] = 1; //Referenced bit set in function
                                                         frameTable[(*rscArrayPointer)[i]->tableSz[(int)childRequestAddress]][2] = atoi(requestType); //Dirty Bit is set MAYBE CHANGE THIS TO PROCESS NUMBER
                                                         *nanoseconds += 10000000;
                                                         accessSpeed +=  10000000;
