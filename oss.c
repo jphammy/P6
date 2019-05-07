@@ -48,7 +48,7 @@ void timeToFork(unsigned int *seconds, unsigned int *nanoseconds, unsigned int *
         *forkTimeSeconds = *seconds;
 }
 
-int main(int argc, char *argv[]){
+int main (int argc, char *argv[]) {
         struct sigaction sa;
         memset(&sa, 0, sizeof(struct sigaction));
         sigemptyset(&sa.sa_mask);
@@ -85,9 +85,9 @@ int main(int argc, char *argv[]){
 
         srand(time(NULL));
         char* filename = malloc(sizeof(char));
-        filename = "log.txt";
+        filename = "memoryManagement.txt";
         FILE *infile = fopen(filename, "w");
-        freopen("log.txt","a",infile);
+        freopen("memoryManagement.txt","a",infile);
         char opt;
         processCount = 18;
         int percentage = 50, maxProcL = 900;
@@ -95,7 +95,7 @@ int main(int argc, char *argv[]){
         while((opt = getopt(argc, argv, "hp:x:l:")) != -1){
                 switch(opt){
                         case'h':
-                                printf("Number of processes spawned [default 18]\n-x: Percent of read reqest [default 50]. Write requests take up the remaining percentage. Accepts 0-99.\n-l: Changes the limit of requests made before a process checks for a 75 percent chance of termination (default 900). Accepts 1-2000.\n");
+                                printf("Default 18 processes spawned\n-x: Percent of read reqest default is 50. Accepts 0-99.\n-l: Changes the limit of requests made before a process checks for a 75 percent chance of termination. Accepts 1-2000.\n");
                                 exit(0);
                         case'p':
                                 processCount = atoi(optarg);
@@ -264,7 +264,7 @@ int main(int argc, char *argv[]){
                                                         }
                                                 }
                                                 fprintf(infile,"\n");
-                                                sprintf(message.msgChar,"wakey");
+                                                //sprintf(message.msgChar,"wakey");
                                                 msgsnd(msgid, &message, sizeof(message)-sizeof(long), 0);
                                                 waitpid(((*rscArrayPointer)[i]->pid), &status, 0);
                                                 free(rscArraySz[i]);
@@ -283,8 +283,8 @@ int main(int argc, char *argv[]){
                         fclose(infile);
                 }
 
-        }while((*seconds < SECOND_TIMER+10000) && alrm == 0 && forked < 100);
-        fprintf(infile, "\nMaster: \n\tProgram is complete!!! Statistics are as follows:\n\t%f memory accesses per second.\n\t%f pagefaults per memory access.\n\t%f average access speed in nanoseconds.\n\t%d forks.\n\n", memoryAccessesPerSecond, pageFaults/memoryAccesses, accessSpeed/memoryAccesses, forked);
+        }while((*seconds < SECOND_TIMER+10000) && alrm == 0 && forked < 100); //Stats sections
+        fprintf(infile, "\nMaster says: \n\tProgram is complete!!! Statistics are as follows:\n\t%f memory accesses per second.\n\t%f pagefaults per memory access.\n\t%f average access speed in nanoseconds.\n\t%d forks.\n\n", memoryAccessesPerSecond, pageFaults/memoryAccesses, accessSpeed/memoryAccesses, forked);
 
         fclose(infile);
         shmdt(seconds);
