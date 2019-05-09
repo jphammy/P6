@@ -36,7 +36,7 @@ void segFaultCatcher(int signal, siginfo_t *si, void *arg){
 }
 
 void timeToFork(unsigned int *seconds, unsigned int *nanoseconds, unsigned int *forkTimeSeconds, unsigned int *forkTimeNanoseconds){
-        unsigned int random = rand()%500000000;//1000000000;
+        unsigned int random = rand()%500000000;
         *forkTimeNanoseconds = 0;
         *forkTimeSeconds = 0;
         if((random + nanoseconds[0]) >=1000000000){
@@ -178,8 +178,8 @@ int main (int argc, char *argv[]) {
                                                 childRequestAddress = (int)(floor(childRequestAddress));
                                                 if((*rscArrayPointer)[i]->tableSz[(int)childRequestAddress] == -1 || frameTable[(*rscArrayPointer)[i]->tableSz[(int)childRequestAddress]][0] != (*rscArrayPointer)[i]->pid){//if the page table position is empty or the pagetable frame position no longer is associated with the child request address
                                                         //assign to Frame Table
-                                                        //need to check if pagetable[childrequestaddress] isnt -1;
-                                                        //if frame table at frameTable[childRequestAddress][0]
+                                                        
+                                                        
                                                         frameLoop = 0;
                                                         while(frameTable[frameTablePos][0] != 0 && frameLoop < 255){ // Check for first empty frame
                                                                 frameTablePos++;
@@ -225,7 +225,7 @@ int main (int argc, char *argv[]) {
                                                                 frameTable[frameTablePos][1] = 0; //Resources is now clear
                                                                 frameTable[frameTablePos][2] = atoi(requestType);
                                                                 fprintf(infile, "Master: Address %d in frame %d giving data to P%d at time %d : %d\n", address, frameTablePos, i, *seconds, *nanoseconds);
-                                                                frameTablePos++; //clock advances.
+                                                                frameTablePos++; //Advance clock.
                                                                 if(frameTablePos == 256){
                                                                         frameTablePos = 0;
                                                                 }
@@ -238,7 +238,7 @@ int main (int argc, char *argv[]) {
                                                 } else {
                                                         memoryAccesses++;
                                                         frameTable[(*rscArrayPointer)[i]->tableSz[(int)childRequestAddress]][1] = 1; //Referenced bit set in function
-                                                        frameTable[(*rscArrayPointer)[i]->tableSz[(int)childRequestAddress]][2] = atoi(requestType); //Dirty Bit is set MAYBE CHANGE THIS TO PROCESS NUMBER
+                                                        frameTable[(*rscArrayPointer)[i]->tableSz[(int)childRequestAddress]][2] = atoi(requestType); //Dirty Bit is set 
                                                         *nanoseconds += 10000000;
                                                         accessSpeed +=  10000000;
                                                         requests++; 
@@ -264,7 +264,6 @@ int main (int argc, char *argv[]) {
                                                         }
                                                 }
                                                 fprintf(infile,"\n");
-                                                //sprintf(message.msgChar,"wakey");
                                                 msgsnd(msgid, &message, sizeof(message)-sizeof(long), 0);
                                                 waitpid(((*rscArrayPointer)[i]->pid), &status, 0);
                                                 free(rscArraySz[i]);
