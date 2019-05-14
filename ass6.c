@@ -30,7 +30,6 @@ int main(int argc, char *argv[]) {
         int msgid = msgget(msgKey, 0666 | IPC_CREAT);
         int timeid = atoi(argv[1]);
         int semid = atoi(argv[2]);
-        //int position = atoi(argv[3]);
         int rscID = atoi(argv[4]);
         int limit = atoi(argv[5]);
         int percentage = atoi(argv[6]);
@@ -45,22 +44,22 @@ int main(int argc, char *argv[]) {
         randomTimer(seconds, nanoseconds, &eventTimeSeconds, &eventTimeNanoseconds);
         while(complete == 0){
                 if((*seconds == eventTimeSeconds && *nanoseconds >= eventTimeNanoseconds) || *seconds > eventTimeSeconds){
-                        event = rand()%99;//99;
+                        event = rand()%99;
                         request = rand()%32001;
                         requests++;
                         randomTimer(seconds, nanoseconds, &eventTimeSeconds, &eventTimeNanoseconds);
-                        if(requests == limit/*900*/ && event < 75){
+                        if(requests == limit && event < 75){
                                 message.msgString = (int)pid;
                                 sprintf(message.msgChar,"%d", 99999);
                                 msgsnd(msgid, &message, sizeof(message)-sizeof(long), 0);
                                 msgrcv(msgid, &message, sizeof(message)-sizeof(long), (pid+118), 0);
                                 complete = 1;
-                        } else if(event < percentage/*50*/){
+                        } else if(event < percentage){
                                 message.msgString = (int)pid;
                                 sprintf(message.msgChar,"%d %d", request, 0);
                                 msgsnd(msgid, &message, sizeof(message)-sizeof(long), 0);
                                 msgrcv(msgid, &message, sizeof(message)-sizeof(long), (pid+118), 0);
-                        } else if(event >= (99-percentage)/*50*/){
+                        } else if(event >= (99-percentage)){
                                 message.msgString = (int)pid;
                                 sprintf(message.msgChar,"%d %d", request, 1);
                                 msgsnd(msgid, &message, sizeof(message)-sizeof(long), 0);
